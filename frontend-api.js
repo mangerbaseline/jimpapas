@@ -10,8 +10,10 @@
 // =============================================
 
 // Supabase configuration
-const SUPABASE_URL = "https://bwtandtfnzdinvelvpiy.supabase.co";
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ3dGFuZHRmbnpkaW52ZWx2cGl5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwNzUwODIsImV4cCI6MjA5NjY1MTA4Mn0.0QNNuTjifPxJdu0EGpoHM7i6DCb3KGRUCkhIMfaW0Ts";
+const SUPABASE_URL = "https://fujzkvrwnriqkcazwbns.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ1anprdnJ3bnJpcWtjYXp3Ym5zIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODExNDYyNzMsImV4cCI6MjA5NjcyMjI3M30.nTd44OTh-ycdzJJmQX1c0UIYed8cimFUd3SpkbSFLFw";
+// const SUPABASE_URL = "https://bwtandtfnzdinvelvpiy.supabase.co";
+// const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ3dGFuZHRmbnpkaW52ZWx2cGl5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwNzUwODIsImV4cCI6MjA5NjY1MTA4Mn0.0QNNuTjifPxJdu0EGpoHM7i6DCb3KGRUCkhIMfaW0Ts";
 
 // Initialize Supabase client
 const { createClient } = supabase;
@@ -158,7 +160,7 @@ async function loadDashboardData() {
     conns.forEach(c => {
       if (c.platform === 'servicem8') sm8Connected = true;
       if (c.platform === 'xero') xeroConnected = true;
-      
+
       // Update checkmarks in onboarding UI
       if (typeof connectAccount === 'function') {
         connectAccount(c.platform);
@@ -223,12 +225,12 @@ async function loadDashboardData() {
 
     // Estimate hours (ServiceM8 sync uses $80/hr rate)
     const hours = lab / 80;
-    const dateStr = job.completed_at 
+    const dateStr = job.completed_at
       ? new Date(job.completed_at).toLocaleDateString('en-AU', { day: 'numeric', month: 'short' })
       : '';
 
-    const meta = isActive 
-      ? `Active — day 4 of 7 · overrunning` 
+    const meta = isActive
+      ? `Active — day 4 of 7 · overrunning`
       : `Completed ${dateStr} · ${hours.toFixed(1)} hrs`;
 
     return {
@@ -248,8 +250,8 @@ async function loadDashboardData() {
         lab: `${hours.toFixed(1)} hrs used · ${(hours * 0.8).toFixed(1)} quoted`,
         mat: `$${mat.toLocaleString()} actual · $${(mat * 0.9).toLocaleString()} budgeted`,
         color: gp >= 35 ? 'var(--ups)' : gp >= 20 ? 'var(--wn)' : 'var(--dns)',
-        note: isActive 
-          ? 'Scope change on day 2 added tiling not in original quote.' 
+        note: isActive
+          ? 'Scope change on day 2 added tiling not in original quote.'
           : 'Job completed on budget.'
       }
     };
@@ -290,7 +292,7 @@ async function loadDashboardData() {
     const nameLower = job.job_name.toLowerCase();
     let matchedClient = clientMap.find(cm => cm.keywords.some(kw => nameLower.includes(kw)));
     let clientName = matchedClient ? matchedClient.name : 'Other Clients';
-    
+
     if (!clientGroups[clientName]) {
       clientGroups[clientName] = {
         name: clientName,
@@ -308,7 +310,7 @@ async function loadDashboardData() {
 
     const rev = parseFloat(job.revenue || 0);
     const profit = rev - parseFloat(job.labour_cost || 0) - parseFloat(job.materials_cost || 0);
-    
+
     clientGroups[clientName].rev += rev;
     clientGroups[clientName].profitSum += profit;
     clientGroups[clientName].gp_abs += profit;
@@ -361,7 +363,7 @@ async function loadDashboardData() {
   }
 
   // Calculate trends for PERIODS & MONTHS dynamically
-  const monthNames = ['Dec','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov'];
+  const monthNames = ['Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov'];
   const last6Months = [];
   const now = new Date();
   for (let i = 5; i >= 0; i--) {
@@ -437,7 +439,7 @@ async function loadDashboardData() {
     // Update global KPI_DATA
     if (typeof KPI_DATA !== 'undefined') {
       const weekRev = PERIODS.week.rev.reduce((a, b) => a + b, 0);
-      const weekGP = PERIODS.week.rev.reduce((a, b) => a + b, 0) > 0 
+      const weekGP = PERIODS.week.rev.reduce((a, b) => a + b, 0) > 0
         ? (last6Days.reduce((a, b) => a + b.profit, 0) / PERIODS.week.rev.reduce((a, b) => a + b, 0) * 100)
         : 0;
 
@@ -445,7 +447,7 @@ async function loadDashboardData() {
         rev: `$${weekRev.toLocaleString(undefined, { maximumFractionDigits: 0 })}`,
         gp: `${weekGP.toFixed(1)}%`,
         risk: `$${(weekRev * 0.1).toLocaleString(undefined, { maximumFractionDigits: 0 })}`,
-        jobs: jobs.filter(j => j.completed_at && (new Date() - new Date(j.completed_at)) < 7*24*60*60*1000).length.toString()
+        jobs: jobs.filter(j => j.completed_at && (new Date() - new Date(j.completed_at)) < 7 * 24 * 60 * 60 * 1000).length.toString()
       };
 
       KPI_DATA.month = {
@@ -458,10 +460,10 @@ async function loadDashboardData() {
   }
 
   // Redefine buildDonut to be completely dynamic from the database jobs
-  window.buildDonut = function() {
+  window.buildDonut = function () {
     const slices = [];
     const byType = {};
-    
+
     JOBS.forEach(j => {
       const type = j.type || 'General';
       if (!byType[type]) byType[type] = { count: 0, profit: 0, revenue: 0 };
@@ -472,11 +474,11 @@ async function loadDashboardData() {
 
     const colors = ['#166534', '#1a1a16', '#c8c8c0', '#fca5a5', '#3b82f6', '#8b5cf6'];
     const isDM = document.documentElement.getAttribute('data-theme') === 'dark';
-    
+
     Object.entries(byType).forEach(([type, data], index) => {
       let color = colors[index % colors.length];
       if (isDM && index === 1) color = '#d8d8d0';
-      
+
       slices.push({
         label: type,
         jobs: data.count,
@@ -494,12 +496,12 @@ async function loadDashboardData() {
     const svg = document.getElementById('donut-svg');
     if (!svg) return;
     svg.innerHTML = '';
-    
+
     const bg = document.createElementNS(NS, 'circle');
     bg.setAttribute('cx', CX); bg.setAttribute('cy', CY); bg.setAttribute('r', R);
     bg.setAttribute('fill', 'none'); bg.setAttribute('stroke', isDM ? '#2a2a26' : '#e8e8e5'); bg.setAttribute('stroke-width', sw);
     svg.appendChild(bg);
-    
+
     let offset = 0;
     slices.forEach(s => {
       const frac = s.jobs / total, dash = Math.max(0, frac * circ - gap);
@@ -529,7 +531,7 @@ async function loadDashboardData() {
   };
 
   // Redefine buildSparklines to draw dynamically from the period trends
-  window.buildSparklines = function() {
+  window.buildSparklines = function () {
     const isDarkMode = document.documentElement.getAttribute('data-theme') === 'dark';
     const revTrend = PERIODS[curPeriod].rev;
     const gpTrend = PERIODS[curPeriod].gp;
@@ -538,7 +540,7 @@ async function loadDashboardData() {
 
     if (typeof drawSparkline === 'function') {
       drawSparkline('spark-rev', revTrend, '#15803d');
-      drawSparkline('spark-gp',  gpTrend, '#15803d');
+      drawSparkline('spark-gp', gpTrend, '#15803d');
       drawSparkline('spark-risk', riskTrend, '#b91c1c');
       drawSparkline('spark-jobs', jobsTrend, isDarkMode ? '#d8d8d0' : '#1a1a16');
     }
@@ -676,7 +678,7 @@ const nextBtn = document.querySelector(".ob-btn-p[onclick*='obNext']");
 
 if (emailInput && nextBtn) {
   // Replace the default onclick
-  nextBtn.onclick = async function(e) {
+  nextBtn.onclick = async function (e) {
     const email = emailInput.value.trim();
     if (!email) {
       alert("Please enter your email");
@@ -693,14 +695,14 @@ const sm8Btn = document.getElementById("ob-sm8");
 const xeroBtn = document.getElementById("ob-xero");
 
 if (sm8Btn) {
-  sm8Btn.onclick = async function(e) {
+  sm8Btn.onclick = async function (e) {
     await connectServiceM8();
     connectAccount("sm8");
   };
 }
 
 if (xeroBtn) {
-  xeroBtn.onclick = async function(e) {
+  xeroBtn.onclick = async function (e) {
     await connectXero();
     connectAccount("xero");
   };
